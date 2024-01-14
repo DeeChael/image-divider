@@ -3,6 +3,9 @@ A simple image divider to divide a image which is too long (or wide)
 
 ! This is my first project written in go language, sorry for that this software looks very bad :< !
 
+I write an ui application for this in kotlin, go and check it! :D \
+https://github.com/DeeChael/image-divider-ui
+
 ### TODOs
 1. ~~Support dividing images horizontally~~ **Completed on 2024.1.14**
 2. More error checks to prevent errors and make it clear to know what's going on
