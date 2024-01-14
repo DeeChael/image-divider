@@ -4,7 +4,7 @@ A simple image divider to divide a image which is too long (or wide)
 ! This is my first project written in go language, sorry for that this software looks very bad :< !
 
 ### TODOs
-1. Support dividing images horizontally
+1. ~~Support dividing images horizontally~~ **Completed on 2024.1.14**
 2. More error checks to prevent errors and make it clear to know what's going on
 3. More format support
 4. ... (Plz give me some advice!)
@@ -12,20 +12,15 @@ A simple image divider to divide a image which is too long (or wide)
 usage:
 ```shell
 Usage of image-divider.exe:
-  -clips int
+  -c int
         How many clips will the image be divided (default -1)
-  -f string
-        The format of output image files (default "png")
-  -i string
-        Image file
-  -o string
-        Output Directory
-  -p string
+  -clips int
         How many clips will the image be divided (default -1)
   -f string
         The format of output image files (default "png")
   -format string
         The format of output image files (default "png")
+  -h    To divide the image horizontally
   -i string
         Image file
   -input string

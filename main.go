@@ -24,9 +24,11 @@ func main() {
 	var outputPrefix string
 	var format string
 
-	var isInCurrentDirectory bool = true
+	var isInCurrentDirectory = true
 
 	var outputExactPrefix string
+
+	var horizontally bool
 
 	flag.StringVar(&imageFile, "i", "", "Image file")
 	flag.StringVar(&imageFile, "input", "", "Image file")
@@ -38,6 +40,7 @@ func main() {
 	flag.StringVar(&outputPrefix, "prefix", "", "Prefix of the output files")
 	flag.StringVar(&format, "f", "png", "The format of output image files")
 	flag.StringVar(&format, "format", "png", "The format of output image files")
+	flag.BoolVar(&horizontally, "h", false, "To divide the image horizontally")
 	flag.Parse()
 
 	if imageFile == "" {
@@ -144,6 +147,45 @@ func main() {
 		return
 	}
 
+	if horizontally {
+		divideH(logger, image, clips, format, outputExactPrefix)
+	} else {
+		divideV(logger, image, clips, format, outputExactPrefix)
+	}
+}
+
+func divideH(logger *zap.Logger, image image2.Image, clips int, format string, outputExactPrefix string) {
+	gap := image.Bounds().Size().X / clips
+
+	gapLimit := image.Bounds().Size().X / (clips - 1)
+
+	for image.Bounds().Size().X%gap != 0 && gap < gapLimit && gap*clips < image.Bounds().Size().X {
+		gap++
+	}
+
+	width := 0
+
+	for i := 0; i < clips; i++ {
+		rect := image2.Rect(0, 0, Min(gap, image.Bounds().Size().X-width), image.Bounds().Size().Y)
+		newRGBA := image2.NewRGBA(rect)
+
+		draw.Draw(newRGBA, rect, image, image2.Point{X: width}, draw.Src)
+
+		newImage := newRGBA.SubImage(rect)
+
+		if format == "img" {
+			saveJpg(logger, newImage, outputExactPrefix+strconv.Itoa(i)+"."+format)
+		} else {
+			savePng(logger, newImage, outputExactPrefix+strconv.Itoa(i)+"."+format)
+		}
+
+		width += gap
+	}
+
+	logger.Info("Successfully divided the image!")
+}
+
+func divideV(logger *zap.Logger, image image2.Image, clips int, format string, outputExactPrefix string) {
 	gap := image.Bounds().Size().Y / clips
 
 	gapLimit := image.Bounds().Size().Y / (clips - 1)
@@ -172,7 +214,6 @@ func main() {
 	}
 
 	logger.Info("Successfully divided the image!")
-
 }
 
 func saveJpg(logger *zap.Logger, image image2.Image, filename string) {
